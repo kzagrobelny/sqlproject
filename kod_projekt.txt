@@ -1,0 +1,531 @@
+-- Created by Vertabelo (http://vertabelo.com)
+-- Last modification date: 2023-06-12 15:08:24.028
+
+-- tables
+-- Table: Client
+CREATE TABLE Client (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    surname varchar2(30)  NOT NULL,
+    phoneNumber varchar2(10)  NOT NULL,
+    Promotion_id integer  NOT NULL,
+    CONSTRAINT Client_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Hairdresser
+CREATE TABLE Hairdresser (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    surname varchar2(30)  NOT NULL,
+    salary number(10,2)  NOT NULL,
+    phoneNumber varchar2(10)  NOT NULL,
+    hiredate date  NOT NULL,
+    Specialization_id integer  NOT NULL,
+    CONSTRAINT Hairdresser_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Payment
+CREATE TABLE Payment (
+    id integer  NOT NULL,
+    payment_date date  NOT NULL,
+    Payment_type_id integer  NOT NULL,
+    Reservation_id integer  NOT NULL,
+    CONSTRAINT Payment_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Payment_type
+CREATE TABLE Payment_type (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    CONSTRAINT Payment_type_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Product
+CREATE TABLE Product (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    description varchar2(150)  NOT NULL,
+    price number(10,2)  NOT NULL,
+    quantity_in_magazine number(10,0)  NOT NULL,
+    CONSTRAINT Product_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Product_service
+CREATE TABLE Product_service (
+    Service_id integer  NOT NULL,
+    Product_id integer  NOT NULL,
+    CONSTRAINT Product_service_pk PRIMARY KEY (Service_id,Product_id)
+) ;
+
+-- Table: Promotion
+CREATE TABLE Promotion (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    value_in_percent number(5,2)  NOT NULL,
+    CONSTRAINT Promotion_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Reservation
+CREATE TABLE Reservation (
+    id integer  NOT NULL,
+    reservation_date date  NOT NULL,
+    timeStart timestamp  NOT NULL,
+    Client_id integer  NOT NULL,
+    Hairdresser_id integer  NOT NULL,
+    CONSTRAINT Reservation_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Service
+CREATE TABLE Service (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    description varchar2(150)  NOT NULL,
+    price number(10,2)  NOT NULL,
+    Status_id integer  NOT NULL,
+    CONSTRAINT Service_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Service_reservation
+CREATE TABLE Service_reservation (
+    Reservation_id integer  NOT NULL,
+    Service_id integer  NOT NULL,
+    CONSTRAINT Service_reservation_pk PRIMARY KEY (Reservation_id,Service_id)
+) ;
+
+-- Table: Specialization
+CREATE TABLE Specialization (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    CONSTRAINT Specialization_pk PRIMARY KEY (id)
+) ;
+
+-- Table: Status
+CREATE TABLE Status (
+    id integer  NOT NULL,
+    name varchar2(30)  NOT NULL,
+    CONSTRAINT Status_pk PRIMARY KEY (id)
+) ;
+
+-- foreign keys
+-- Reference: Client_Promotion (table: Client)
+ALTER TABLE Client ADD CONSTRAINT Client_Promotion
+    FOREIGN KEY (Promotion_id)
+    REFERENCES Promotion (id);
+
+-- Reference: Hairdresser_Specialization (table: Hairdresser)
+ALTER TABLE Hairdresser ADD CONSTRAINT Hairdresser_Specialization
+    FOREIGN KEY (Specialization_id)
+    REFERENCES Specialization (id);
+
+-- Reference: Payment_Payment_type (table: Payment)
+ALTER TABLE Payment ADD CONSTRAINT Payment_Payment_type
+    FOREIGN KEY (Payment_type_id)
+    REFERENCES Payment_type (id);
+
+-- Reference: Payment_Reservation (table: Payment)
+ALTER TABLE Payment ADD CONSTRAINT Payment_Reservation
+    FOREIGN KEY (Reservation_id)
+    REFERENCES Reservation (id);
+
+-- Reference: Product_service_Product (table: Product_service)
+ALTER TABLE Product_service ADD CONSTRAINT Product_service_Product
+    FOREIGN KEY (Product_id)
+    REFERENCES Product (id);
+
+-- Reference: Product_service_Service (table: Product_service)
+ALTER TABLE Product_service ADD CONSTRAINT Product_service_Service
+    FOREIGN KEY (Service_id)
+    REFERENCES Service (id);
+
+-- Reference: Reservation_Client (table: Reservation)
+ALTER TABLE Reservation ADD CONSTRAINT Reservation_Client
+    FOREIGN KEY (Client_id)
+    REFERENCES Client (id);
+
+-- Reference: Reservation_Hairdresser (table: Reservation)
+ALTER TABLE Reservation ADD CONSTRAINT Reservation_Hairdresser
+    FOREIGN KEY (Hairdresser_id)
+    REFERENCES Hairdresser (id);
+
+-- Reference: Service_Status (table: Service)
+ALTER TABLE Service ADD CONSTRAINT Service_Status
+    FOREIGN KEY (Status_id)
+    REFERENCES Status (id);
+
+-- Reference: Service_reservation_r (table: Service_reservation)
+ALTER TABLE Service_reservation ADD CONSTRAINT Service_reservation_r
+    FOREIGN KEY (Reservation_id)
+    REFERENCES Reservation (id);
+
+-- Reference: Service_reservation_s (table: Service_reservation)
+ALTER TABLE Service_reservation ADD CONSTRAINT Service_reservation_s
+    FOREIGN KEY (Service_id)
+    REFERENCES Service (id);
+
+-- End of file.
+
+
+
+-- Table: Client
+INSERT INTO Client (id, name, surname, phoneNumber, Promotion_id) VALUES (1, 'Jan', 'Kowalski', '123456789', 3);
+INSERT INTO Client (id, name, surname, phoneNumber, Promotion_id) VALUES (2, 'Natalia', 'Marciniak', '987654321', 3);
+INSERT INTO Client (id, name, surname, phoneNumber, Promotion_id) VALUES (3, 'Filip', 'Król', '982716541', 3);
+
+-- Table: Specialization
+INSERT INTO Specialization (id, name) VALUES (1, 'Farbowanie');
+INSERT INTO Specialization (id, name) VALUES (2, 'Prostowanie keratyną');
+INSERT INTO Specialization (id, name) VALUES (3, 'Stylizowanie');
+
+-- Table: Payment_type
+INSERT INTO Payment_type (id, name) VALUES (1, 'Karta');
+INSERT INTO Payment_type (id, name) VALUES (2, 'Gotówka');
+INSERT INTO Payment_type (id, name) VALUES (3, 'BLIK');
+
+-- Table: Hairdresser
+INSERT INTO Hairdresser (id, name, surname, salary, phoneNumber, hiredate, Specialization_id) VALUES (1, 'Mariusz', 'Lewandowski', 2300, '376671954', TO_DATE('2022-07-20', 'YYYY-MM-DD'), 3);
+INSERT INTO Hairdresser (id, name, surname, salary, phoneNumber, hiredate, Specialization_id) VALUES (2, 'Franek', 'Wolski', 4000, '267987126', TO_DATE('2022-11-12', 'YYYY-MM-DD'), 2);
+INSERT INTO Hairdresser (id, name, surname, salary, phoneNumber, hiredate, Specialization_id) VALUES (3, 'Konrad', 'Wallenrod', 3400, '678349054', TO_DATE('2022-10-21', 'YYYY-MM-DD'), 1);
+INSERT INTO Hairdresser (id, name, surname, salary, phoneNumber, hiredate, Specialization_id) VALUES (4, 'Amelia', 'Janowska', 3250, '625109785', TO_DATE('2022-01-13', 'YYYY-MM-DD'), 2);
+INSERT INTO Hairdresser (id, name, surname, salary, phoneNumber, hiredate, Specialization_id) VALUES (5, 'Martyna', 'Polak', 7000, '863154920', TO_DATE('2022-02-27', 'YYYY-MM-DD'), 1);
+INSERT INTO Hairdresser (id, name, surname, salary, phoneNumber, hiredate, Specialization_id) VALUES (6, 'Jan', 'Tomasiak', 5000, '732119821', TO_DATE('2023-01-09', 'YYYY-MM-DD'), 1);
+
+-- Table: Service
+INSERT INTO Service (id, name, description, price, Status_id) VALUES (1, 'Strzyżenie męskie', 'Strzyżenie mężczyzn niezależnie od wieku i długości włosów', 70, 1);
+INSERT INTO Service (id, name, description, price, Status_id) VALUES (2, 'Strzyżenie damskie', 'Strzyżenie kobiet z dłuższymi włosami', 140, 1);
+INSERT INTO Service (id, name, description, price, Status_id) VALUES (3, 'Podcinanie końcówek', 'Podcinanie końcówek', 50, 1);
+INSERT INTO Service (id, name, description, price, Status_id) VALUES (4, 'Stylizowanie', 'Stylizacja włosów zarówno męskich jak i żeńskich', 70, 1);
+INSERT INTO Service (id, name, description, price, Status_id) VALUES (5, 'Farbowanie', 'Farbowanie włosów niezależnie od płci', 100, 1);
+INSERT INTO Service (id, name, description, price, Status_id) VALUES (6, 'Prostowanie keratyną', 'Usługa przeznaczona głównie dla kobiet', 400, 1);
+
+-- Table: Product 
+INSERT INTO Product (id, name, description, price, quantity_in_magazine) VALUES (1, 'Farba blond', 'Farba do farbowania włosów na kolor blond', 40, 20);
+INSERT INTO Product (id, name, description, price, quantity_in_magazine) VALUES (2, 'Farba czarna', 'Farba do farbowania włosów na kolor czarny', 30, 25);
+INSERT INTO Product (id, name, description, price, quantity_in_magazine) VALUES (3, 'Odżywka do włosów blond', 'Odżywka nawilżająca do włosów blond', 100, 10);
+INSERT INTO Product (id, name, description, price, quantity_in_magazine) VALUES (4, 'Pianka do włosów', 'Pianka nadająca objętość', 60, 5);
+INSERT INTO Product (id, name, description, price, quantity_in_magazine) VALUES (5, 'Szampon do włosów', 'Szampon wygładzający włosy', 70, 50);
+
+-- Table: Product_service
+INSERT INTO Product_service (Service_id, Product_id) VALUES (1, 5);
+INSERT INTO Product_service (Service_id, Product_id) VALUES (2, 5);
+INSERT INTO Product_service (Service_id, Product_id) VALUES (4, 4);
+INSERT INTO Product_service (Service_id, Product_id) VALUES (5, 1);
+INSERT INTO Product_service (Service_id, Product_id) VALUES (5, 2);
+
+-- Table: Promotion
+INSERT INTO Promotion (id, name, value_in_percent) VALUES (1, 'Duża zniżka', 15);
+INSERT INTO Promotion (id, name, value_in_percent) VALUES (2, 'Mała zniżka', 5);
+INSERT INTO Promotion (id, name, value_in_percent) VALUES (3, 'Brak promocji', 0);
+
+-- Table: Reservation
+INSERT INTO Reservation (id, reservation_date, timeStart, Hairdresser_id, Client_id) VALUES (1, TO_DATE('2022-11-10', 'YYYY-MM-DD'), timestamp '2022-12-10 10:22:23', 1, 3);
+INSERT INTO Reservation (id, reservation_date, timeStart, Hairdresser_id, Client_id) VALUES (2, TO_DATE('2022-12-17', 'YYYY-MM-DD'), timestamp '2023-01-05 12:34:15', 2, 2);
+INSERT INTO Reservation (id, reservation_date, timeStart, Hairdresser_id, Client_id) VALUES (3, TO_DATE('2022-08-27', 'YYYY-MM-DD'), timestamp '2022-09-01 15:15:59', 3, 1);
+
+-- Table: Service_reservation
+INSERT INTO Service_reservation (Service_id, Reservation_id) VALUES (1, 1);
+INSERT INTO Service_reservation (Service_id, Reservation_id) VALUES (5, 2);
+INSERT INTO Service_reservation (Service_id, Reservation_id) VALUES (4, 3);
+
+
+-- Table: Payment
+INSERT INTO Payment (id, payment_date, Reservation_id, Payment_type_id) VALUES (1, TO_DATE('2022-12-10', 'YYYY-MM-DD'), 1, 1);
+INSERT INTO Payment (id, payment_date, Reservation_id, Payment_type_id) VALUES (2, TO_DATE('2023-01-05', 'YYYY-MM-DD'), 2, 1);
+INSERT INTO Payment (id, payment_date, Reservation_id, Payment_type_id) VALUES (3, TO_DATE('2022-09-01', 'YYYY-MM-DD'), 3, 2);
+
+INSERT INTO Status (id, name) VALUES (1, 'Active');
+INSERT INTO Status (id, name) VALUES (2, 'Inactive');
+INSERT INTO Status (id, name) VALUES (2, 'Temporarily unavailable');
+
+-- Podzapytania
+
+-- 1. Pokazuje najtańszą usługę wraz z jej id, nazwą, opisem i ceną
+
+SELECT id, name, description, price
+FROM service
+WHERE price = (
+    SELECT MIN(price)
+    FROM service
+);
+
+-- 2. Pokazuje rezerwację, która została wykonana najpóźniej wraz z fryzjerem i klientem, którego dotyczy, a także id danej rezerwacji.
+    
+SELECT r.id, r.reservation_date, h.surname AS "Nazwisko fryzjera", c.surname AS "Nazwisko klienta"
+FROM reservation r
+JOIN client c ON c.id = r.client_id
+JOIN hairdresser h ON h.id = r.hairdresser_id
+WHERE reservation_date = (
+    SELECT MAX(reservation_date)
+    FROM reservation
+);
+
+
+-- Funkcje agregujące 
+
+-- 1. Oblicza ilość usług, których cena przekracza 100
+    
+SELECT COUNT(*)
+FROM service
+WHERE price > 100;
+
+-- 2. Wyświetla produkty, których cena jest najniższa, bądź ilość w magazynie jest najwyższa
+    
+SELECT id, name, price, quantity_in_magazine
+FROM product
+WHERE price = (
+    SELECT MIN(price)
+    FROM product
+) OR quantity_in_magazine = (
+    SELECT MAX(quantity_in_magazine)
+    FROM product
+);
+
+-- 3. Wyświetla łączną ilość produktów w magazynie
+
+SELECT SUM(quantity_in_magazine)
+FROM product;
+
+
+-- Podzapytanie skorelowane
+
+-- 1. Wyświetla fryzjerów, którzy zostali zatrudnieni najwcześniej w danej specjalizacji
+
+SELECT h.*, s.name
+FROM hairdresser h
+JOIN specialization s ON s.id = h.specialization_id
+WHERE h.hiredate = (
+    SELECT MIN(hiredate)
+    FROM hairdresser
+    WHERE specialization_id = h.Specialization_id
+)
+ORDER BY h.id;
+
+-- Podzapytania z JOIN'em
+
+-- 1. Pokazuje rezerwacje wraz z ceną usług, które są w czasie nich wykonywane
+
+SELECT r.id, r.reservation_date, h.surname AS "Nazwisko fryzjera", c.surname AS "Nazwisko klienta", s.name AS "Usługa", s.price AS "Cena za usługę"
+FROM reservation r
+JOIN hairdresser h ON h.id = r.hairdresser_id
+JOIN client c ON r.client_id = c.id
+JOIN service_reservation sr ON sr.reservation_id = r.id
+JOIN service s ON sr.service_id = s.id;
+
+-- 2. Pokazuje klientów, datę płatności oraz sposób płatności jaki wybrali
+
+SELECT p.id, p.payment_date, c.name, c.surname, c.phoneNumber, pt.name AS "Rodzaj płatności"
+FROM payment p
+JOIN reservation r ON p.reservation_id = r.id
+JOIN client c ON r.client_id = c.id
+JOIN payment_type pt ON p.payment_type_id = pt.id;
+
+
+-- Triggery BEFORE
+
+CREATE OR REPLACE TRIGGER insertingUpdatingHairdresser
+BEFORE INSERT OR UPDATE
+ON hairdresser
+FOR EACH ROW
+DECLARE
+    PhoneNumberLength NUMBER := 9;
+BEGIN
+    IF LENGTH(:new.phoneNumber) <> PhoneNumberLength THEN
+    	--:new.phoneNumber := :old.phoneNumber
+        RAISE_APPLICATION_ERROR(-20004, 'Numer telefonu musi składać się z 9 cyfr.');
+    END IF;
+    
+    IF INSERTING AND :new.hiredate > SYSDATE THEN
+        --:new.hiredate := :old.hiredate
+        RAISE_APPLICATION_ERROR(-20002, 'Nie można ustawić daty zatrudnienia na przyszłą datę.');
+    END IF;
+    
+    IF UPDATING AND :new.phoneNumber = :old.phoneNumber THEN
+    	RAISE_APPLICATION_ERROR(-20006, 'Numer telefonu nie może być taki sam jak poprzedni.');
+    END IF;
+END;
+
+SELECT *
+FROM hairdresser
+
+UPDATE hairdresser
+SET phoneNumber = 376671954
+WHERE id = 1
+
+UPDATE hairdresser
+SET phoneNumber = 123
+WHERE id = 1
+
+
+INSERT INTO Hairdresser (id, name, surname, salary, phoneNumber, hiredate, Specialization_id) VALUES (10, 'Mariusz', 'Lewandowski', 1500, '376671954', TO_DATE('2024-07-20', 'YYYY-MM-DD'), 3);
+
+
+
+-- 2.
+
+CREATE OR REPLACE TRIGGER preventDeleteHairdresser
+BEFORE DELETE
+ON hairdresser
+FOR EACH ROW
+DECLARE
+    ReservationCount NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO ReservationCount
+    FROM reservation
+    WHERE Hairdresser_id = :old.id;
+
+    IF ReservationCount > 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Nie można usunąć fryzjera, który ma aktywne rezerwacje.');
+    END IF;
+
+    IF :old.Specialization_id = 2 THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Nie można usunąć fryzjera, który jest specjalistą w prostowaniu włosów keratyną.');
+    END IF;
+
+    IF :old.salary > 5000 THEN
+        RAISE_APPLICATION_ERROR(-20006, 'Nie można usunąć tego pracownika. Aby usunąć skontaktuj się z przełożonym.');
+    END IF;
+END;
+
+-- Uruchamia warunek 2 (specjalista w prostowaniu keratyną)
+
+DELETE 
+FROM hairdresser 
+WHERE id = 4;
+
+-- Uruchamia warunek 1 (ma aktywne rezerwacje)
+
+DELETE 
+FROM hairdresser 
+WHERE id = 1;
+
+-- Uruchamia warunek 3 (pensja większa niż 5000)
+
+DELETE 
+FROM hairdresser 
+WHERE salary > 5000;
+
+DROP trigger insertingUpdatingHairdresser
+DROP trigger preventDeleteHairdresser
+
+-- Triggery AFTER
+
+-- 1.
+
+CREATE OR REPLACE TRIGGER AfterInsertUpdate
+AFTER INSERT OR UPDATE ON reservation
+FOR EACH ROW
+DECLARE
+    reservationCount NUMBER;
+    levelOfDiscount NUMBER := 0;
+BEGIN
+
+    -- sprawdza czy data rezerewacji to szczęśliwa data rezerwacji i przypisuje poziom zniżki
+    
+	IF :new.reservation_date = TO_DATE('2020-02-20', 'YYYY-MM-DD') THEN
+    	levelOfDiscount := 1;
+    	DBMS_OUTPUT.put_line('Jesteś szczęśliwym wygranym!');
+    END IF;
+
+	-- sprawdza czy id to 100 lub 50 i przypisuje numer zniżki
+
+    IF :new.id = 100 THEN
+        levelOfDiscount := 1;
+    ELSIF :new.id = 50 THEN
+        levelOfDiscount := 2;
+    END IF;
+
+	-- updatuje poziom zniżki u poszczególnego klienta
+
+	IF levelOfDiscount > 0 THEN
+        UPDATE client 
+        SET promotion_id = levelOfDiscount
+        WHERE id = :new.client_id;
+	END IF;
+END;
+
+
+SELECT *
+FROM client
+
+SELECT *
+FROM promotion
+
+DELETE 
+FROM reservation 
+where id = 100
+    
+INSERT INTO Reservation (id, reservation_date, timeStart, Hairdresser_id, Client_id) VALUES (100, TO_DATE('2023-02-20', 'YYYY-MM-DD'), timestamp '2023-09-01 15:15:59', 4, 3);
+INSERT INTO Reservation (id, reservation_date, timeStart, Hairdresser_id, Client_id) VALUES (49, TO_DATE('2020-02-20', 'YYYY-MM-DD'), timestamp '2023-09-01 15:15:59', 4, 3);
+
+-- 2. 
+CREATE OR REPLACE TRIGGER AfterDelete
+AFTER DELETE ON client
+FOR EACH ROW
+DECLARE
+    ActiveReservationCount NUMBER;
+BEGIN
+
+	-- podliczenie ilości rezerwacji klienta
+    
+   	SELECT COUNT(*) INTO ActiveReservationCount
+   	FROM reservation
+   	WHERE client_id = :old.id;
+
+	-- wyświetla wiadomość o tym czy klient miał aktywne rezerwacje
+
+    IF ActiveReservationCount = 0 THEN
+        DBMS_OUTPUT.put_line('Ten klient nie miał żadnych aktywnych rezerwacji');
+	ELSIF ActiveReservationCount > 0 THEN 
+        DBMS_OUTPUT.put_line('Ten klient miał aktywne rezerwacje');
+	END IF; 
+
+	-- usuwa rezerwację, jeśli był w niej usunięty klient
+
+ 	DELETE
+    FROM reservation
+    WHERE client_id = :old.id;
+END;
+
+
+INSERT INTO Client (id, name, surname, phoneNumber, Promotion_id) VALUES (4, 'Filip', 'Król', '982716541', 3);
+
+INSERT INTO Reservation (id, reservation_date, timeStart, Hairdresser_id, Client_id) VALUES (10, TO_DATE('2022-11-10', 'YYYY-MM-DD'), timestamp '2022-12-10 10:22:23', 1, 4);
+
+DELETE
+FROM client
+WHERE id = 4
+
+SELECT *
+FROM reservation
+
+SELECT *
+FROM client
+
+-- 3. 
+CREATE OR REPLACE TRIGGER AfterDeleteInsertUpdate
+AFTER DELETE OR INSERT OR UPDATE ON client
+DECLARE
+    
+BEGIN
+	IF UPDATING THEN 
+    	DBMS_OUTPUT.put_line('Dane zostały zaktualizowane');
+	END IF;
+	
+	IF INSERTING THEN 
+    	DBMS_OUTPUT.put_line('Klient został dodany');
+	END IF;
+
+	IF DELETING THEN 
+    	DBMS_OUTPUT.put_line('Klient został usunięty');
+	END IF;
+END;
+
+UPDATE client
+SET name = 'Marek'
+WHERE id = 1;
+
+INSERT INTO Client (id, name, surname, phoneNumber, Promotion_id) VALUES (4, 'Filip', 'Król', '982716541', 3);
+
+DELETE 
+FROM client
+WHERE id = 4;
+
