@@ -1,6 +1,3 @@
--- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-06-12 15:08:24.028
-
 -- tables
 -- Table: Client
 CREATE TABLE Client (
@@ -162,9 +159,8 @@ ALTER TABLE Service_reservation ADD CONSTRAINT Service_reservation_s
     FOREIGN KEY (Service_id)
     REFERENCES Service (id);
 
--- End of file.
 
-
+--Inserts
 
 -- Table: Client
 INSERT INTO Client (id, name, surname, phoneNumber, Promotion_id) VALUES (1, 'Jan', 'Kowalski', '123456789', 3);
